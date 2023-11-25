@@ -2,7 +2,10 @@
 
 use Illuminate\Http\Request;
 use App\Http\Message\Message;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\FileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,3 +28,6 @@ Route::get('/get' ,function(Request $request){
     $msg =$obj->setMessage("ke" , "vvv4vv");
     return $msg ;
 });
+Route::post('/upload' , [FileController::class , 'upload']);
+
+Route::post('/download' , [FileController::class , 'download']);
