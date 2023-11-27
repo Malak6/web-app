@@ -6,6 +6,13 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\FileController;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
+
+use App\Http\Controllers\UserController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -31,3 +38,14 @@ Route::get('/get' ,function(Request $request){
 Route::post('/upload' , [FileController::class , 'upload']);
 
 Route::post('/download' , [FileController::class , 'download']);
+
+
+Route::post('/register', [UserController::class, 'register']);
+
+Route::post('/login', [UserController::class, 'login']);
+
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [UserController::class, 'logout']);
+});
+
