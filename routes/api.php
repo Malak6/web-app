@@ -36,10 +36,7 @@ Route::get('/get' ,function(Request $request){
     return $msg ;
 });
 
-Route::post('/download' , [FileController::class , 'download']);
-
 Route::post('/getFileStatus' , [FileController::class , 'getFileStatus']);
-
 
 Route::post('/register', [UserController::class, 'register']);
 
@@ -61,6 +58,9 @@ Route::post('/createGroup' , [GroupController::class , 'createGroup']);
 Route::post('/addUserToGroup', [GroupController::class, 'addUserToGroup']);
 
 Route::get('/getUserGroups', [GroupController::class, 'getUserGroups']);
+
+Route::post('/download' , [FileController::class , 'download']);
+
 
 });
 

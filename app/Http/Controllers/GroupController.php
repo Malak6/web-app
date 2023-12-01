@@ -12,11 +12,15 @@ class GroupController extends Controller
     public function createGroup(Request $request)
     {
         $groupName = $request->input('group_name');
+        $userId = Auth::id();
 
         $group = new Group();
         $group->group_name = $groupName;
-        $group->user_id = Auth::id();
+        $group->user_id = $userId;
         $group->save();
+
+        $group->users()->attach($userId, ['group_id' => $group->id]);
+
         return response()->json(['message' => 'Success'], 201);
     }
 
