@@ -10,9 +10,9 @@ class UserGroup extends Model
     use HasFactory;
 
     protected $table = 'user_groups';
-    
+
     protected $primaryKey = 'id';
-    
+
     protected $fillable = [
         'user_id',
         'group_id',

@@ -9,12 +9,12 @@ class File extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'file_id';
+    protected $primaryKey = 'id';
 
     protected $fillable = [
         'file_name',
         'file_status',
-        'users_id',
-        'groups_id',
+        'user_id',
+        'group_id',
     ];
 }
