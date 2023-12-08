@@ -1,17 +1,18 @@
 <?php
 
+use App\Models\File;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Message\Message;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\FileController;
-use App\Http\Controllers\GroupController;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\GroupController;
+use Illuminate\Validation\ValidationException;
+
 
 
 /*
@@ -29,18 +30,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/get' ,function(Request $request){
-    $obj = new Message();
-    $msg = $obj->getMessage();
-    $msg =$obj->setMessage("ke" , "vvv4vv");
-    return $msg ;
-});
 
 Route::post('/getFileStatus' , [FileController::class , 'getFileStatus']);
-
+Route::post('/login',    [UserController::class , 'log']);
 Route::post('/register', [UserController::class, 'register']);
 
-Route::post('/login', [UserController::class, 'login']);
+
 
 //Route::post('/addUserToGroup', [GroupController::class, 'addUserToGroup']);
 
@@ -57,11 +52,42 @@ Route::post('/createGroup' , [GroupController::class , 'createGroup']);
 
 Route::post('/addUserToGroup', [GroupController::class, 'addUserToGroup']);
 
-Route::get('/getUserGroups', [GroupController::class, 'getUserGroups']);
-
 Route::post('/download' , [FileController::class , 'download']);
 
+Route::post('/checkIn' , [FileController::class , 'checkIn']);
+
+Route::post('/checkOut' , [FileController::class , 'checkOut']);
+
+Route::get('/getUserGroups', [GroupController::class, 'getUserGroups']);
+
+Route::post('/read' , [FileController::class , 'readFile']);
 
 });
 
+Route::get('/test' , [FileController::class , 'test']
+
+
+//     // $ids_array = $request->ids;
+//     // foreach ($ids_array  as $id) {
+//     //     $file =File::where( "id", $id)->first();
+//     //     if($file->file_status == "reserved"){
+//     //         return "this file is reserved" . $file->file_name;
+//     //     }
+//     // }
+//     $ids_array = [1 , 2];
+//     foreach ($ids_array  as $id) {
+//         $file =File::find($id);
+//         if ($file){
+//         $file->file_status= "reserved";
+//         $filename = $file->file_name;
+//         $file->save();
+//         $fff = "public/{$filename}";
+//         downll($fff);
+//         // return Storage::download("public/ORACL.txt");
+//         }
+//     }    
+//     return "  done";
+// }
+);
+ 
 

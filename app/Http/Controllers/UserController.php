@@ -41,23 +41,25 @@ class UserController extends Controller
      * @return \Illuminate\Http\JsonResponse
      * @throws ValidationException
      */
-    public function login(Request $request)
-    {
+
+    public function log(Request $request){ 
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
-
         if (Auth::attempt($request->only('email', 'password'))) {
             $user = Auth::user();
             $token = $user->createToken('auth_token')->plainTextToken;
 
             return response()->json(['token' => $token]);
         }
-
-        throw ValidationException::withMessages([
-            'email' => __('auth.failed'),
-        ]);
+        // throw ValidationException::withMessages([
+        //     'email' => __('auth.failed'),
+        // ]);
+     }
+    public function login(Request $request)
+    {
+        
     }
 
     /**
@@ -73,5 +75,6 @@ class UserController extends Controller
 
         return response()->json(['message' => 'Logged out successfully']);
     }
+
     
 }
