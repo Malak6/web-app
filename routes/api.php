@@ -62,32 +62,10 @@ Route::get('/getUserGroups', [GroupController::class, 'getUserGroups']);
 
 Route::post('/read' , [FileController::class , 'readFile']);
 
+Route::post('/downloadFiles' , [FileController::class , 'downlaodManyFiles']);
+
 });
 
-Route::get('/test' , [FileController::class , 'test']
 
-
-//     // $ids_array = $request->ids;
-//     // foreach ($ids_array  as $id) {
-//     //     $file =File::where( "id", $id)->first();
-//     //     if($file->file_status == "reserved"){
-//     //         return "this file is reserved" . $file->file_name;
-//     //     }
-//     // }
-//     $ids_array = [1 , 2];
-//     foreach ($ids_array  as $id) {
-//         $file =File::find($id);
-//         if ($file){
-//         $file->file_status= "reserved";
-//         $filename = $file->file_name;
-//         $file->save();
-//         $fff = "public/{$filename}";
-//         downll($fff);
-//         // return Storage::download("public/ORACL.txt");
-//         }
-//     }    
-//     return "  done";
-// }
-);
  
 

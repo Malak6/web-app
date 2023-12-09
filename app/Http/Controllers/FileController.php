@@ -13,8 +13,7 @@ use Illuminate\Support\Facades\Storage;
 class FileController extends Controller
 {
 
-    public function upload(Request $request)
-    {
+    public function upload(Request $request){
         if ($request->hasFile('file')) {
             $file = $request->file('file');
             $filename = $file->getClientOriginalName();
@@ -48,16 +47,14 @@ class FileController extends Controller
         } 
         else return response()->json(["message" => "Error: No file found"], 400);
     }   
-
 ////////////////////////////////////////////////////////
-
     public function checkOut(Request $request){
         $fileid = $request->input('file_id');
         $groupId = $request->input('group_id');
         $user_id = Auth::id();
         $existingFile = File::where('id' ,$fileid)->first();
             if($existingFile){
-                $reservedFile = ReservedFile::where(['files_id' => $fileid,'users_id' => $user_id,])->first();
+                $reservedFile = ReservedFile::where(['files_id' => $fileid,'users_id' => $user_id])->first();
                 if ($reservedFile) {
                     $existingFile->file_status = 'free';
                     $existingFile->save();
@@ -75,11 +72,9 @@ class FileController extends Controller
             else return response()->json(["message" => "Error: File not found"], 500);
     }
 ////////////////////////////////////////////////////////
-
-    public function download(Request $request)
-    {
+    public function download(Request $request){
         $result = $this->conditions($request);
-        if($result == "yes"){
+        if($result == "true"){
             $fileid = $request->input('file_id');
             $groupId = $request->input('group_id');
             $user_id = Auth::id();
@@ -92,7 +87,7 @@ class FileController extends Controller
                 $downloadedFile = Storage::download("public/{$filename}");
                 return $downloadedFile;
             }
-            return response()->json(["message" => "Error: You do not reserve this file"], 404);
+            return response()->json(["message" => "Error: You do not download this file"], 404);
         }
         else return $result;
     }
@@ -105,43 +100,56 @@ class FileController extends Controller
         $group = Group::find($groupId);
 
         if (!$file) return response()->json(["message" => "Error: File not found"], 404);
-    
+   
         else if (!$group) return response()->json(["message" => "Error: Group not found"], 404);
         
         else if (!$group->users()->where('user_id', $user->id)->exists()) return response()->json(["message" => "Error: You are not a member of this group"], 403);
         
-        else if ($file->group_id != $groupId) return response()->json(["message" => "Error: File does not belong to this group"], 403);
-
-        else return "yes";
+        else if ($file->group_id != $groupId) return response()->json(["message" => "Error: File does not belong to this group"], 403); 
+        
+        else return "true";
     }
-
 ///////////////////////////////////////////////
     public function checkIn(Request $request){
-        $result = $this->conditions($request);
-        if($result == "yes"){
-            $fileid = $request->input('file_id');
+        $user = Auth::user();
+        $rollback =[];
+            $fileids = $request->input('file_ids');
             $groupId = $request->input('group_id');
-            $user = Auth::user();
-            $file = File::where('id', $fileid)->first();
-            if($file->file_status == 'reserved') return response()->json(["message" => "You can not check in this file , it is reserved"], 403);
-            $filename = $file->file_name;
-            $file->file_status ='reserved';
-            $file->save();
-            $reservedFile = ReservedFile::create([
-                'users_id' => $user->id,
-                'files_id' => $file->id
-            ]);
-            return response()->json(["message" => "You reserved this file"], 200);
+            foreach ($fileids as $fileid) {
+                $req = ['file_id' => $fileid , 'group_id' =>$groupId ];
+                $request->request->add(['file_id' => $fileid]);
+                $result = $this->conditions($request);
+                if($result == "true"){
+                    $file = File::where('id', $fileid)->first();
+                    if(( $file->file_status == 'reserved')){
+                        foreach ($rollback as $id) {
+                            $file = File::where('id', $id)->first();
+                            $file->file_status ='free';
+                            $file->save();
+                        }
+                    return response()->json(["message" => "You can not check in this file , it is reserved"], 403);
+                    }
+                    $filename = $file->file_name;
+                    $file->file_status ='reserved';
+                    $file->save();
+                    $rollback[] = $fileid;
+                }    
+                else return $result;
+            }
+            foreach ($fileids as $fileid) {
+                $reservedFile = ReservedFile::create([
+                    'users_id' => $user->id,
+                    'files_id' => $fileid
+                ]);
+            }
+            return response()->json(["message" => "You reserved files"], 200);
         }
-        else return $result;
-    }
-
+        
 ////////////////////////////////////////////////
-    public function getFileStatus(Request $request)
-    {
-        $filename = $request->input('filename');
+    public function getFileStatus(Request $request){
+        $fileId = $request->input('file_id');
 
-        $file = File::where('file_name', $filename)->first();
+        $file = File::where('id', $fileId)->first();
 
         if (!$file) {
             return response()->json(["message" => "Error: File not found"], 404);
@@ -152,8 +160,7 @@ class FileController extends Controller
         return response()->json(["file_status" => $filestatus]);
     }
 ///////////////////////////////////////////////
-    public function getUserFiles(Request $request)
-    {
+    public function getUserFiles(Request $request){
         $userId = Auth::id();
 
         $userFiles = File::where('user_id', $userId)->get();
@@ -161,71 +168,46 @@ class FileController extends Controller
         return response()->json(["user_files" => $userFiles]);
     }
 //////////////////////////////////////////////////////////////////
-    public function readFile(Request $request)
-    {
-        $filename = $request->input('filename');
+    public function readFile(Request $request){
+        $fileId = $request->input('file_id');
         $user = Auth::user();
         $groupId = $request->input('group_id');
         $group = Group::find($groupId);
-        $file = File::where('file_name', $filename)->first();
-
-        //    ///////////////call condition function
-        // if (!$file) {
-        //     return response()->json(["message" => "Error: File not found"], 404);
-        // }
-
-        // if($file->file_status == 'reserved'){
-        //     return response()->json(["message" => "You can not read this file , it is reserved"], 403);
-        // }
-
-
-        // if (!$group) {
-        //     return response()->json(["message" => "Error: Group not found"], 404);
-        // }
-
-        // if (!$group->users()->where('user_id', $user->id)->exists()) {
-        //     return response()->json(["message" => "Error: You are not a member of this group"], 403);
-        // }
-        // if ($file->group_id != $groupId) {
-        //     return response()->json(["message" => "Error: File does not belong to this group"], 403);
-        // }
-
+        $file = File::where('id', $fileId)->first();
+        $result = $this->conditions($request);
+        if($result == "true"){
+        if($file->file_status == 'reserved') return response()->json(["message" => "You can not read this file , it is reserved"], 403);
         $projectDirectory = base_path();
+        $filename =  $file->file_name;
         return file_get_contents($projectDirectory .'\\storage\\app\\public\\'.$filename);
+        }
+        else return $result;
     }
-
+//////////////////////////////////////////////////////////////////
     public function downlaodManyFiles (Request $request){ 
-
-    $ids_array = $request->input('ids');
-    $files_to_zip = [];
-
-    foreach ($ids_array as $id) {
-        $file = File::find($id);
-        if ($file) {
-            if ($file->file_status == "reserved") {
-                foreach ($files_to_zip as $file_name) {
-                $updatedfile = File::where('file_name' , $file_name)->first();
-                $updatedfile->file_status = 'free' ;
-                $updatedfile-> save();
-                }
-                return "the file {$file->file_name} is reserved ";
+        $user_id = Auth::id();
+        $fileids = $request->input('file_ids');
+        foreach ($fileids as $id) {
+            $request->request->add(['file_id' => $id]);
+            $result = $this->conditions($request);
+            if ($result !== "true"){
+                return $result;
             }
-            // /////////////////////////////////////////////call checkin
-            $file->file_status = "reserved";
-            $file->save();
-            $files_to_zip[] = $file->file_name;
         }
-    }
-
-    $zip = new ZipArchive;
-    $fileName = 'Files.zip';
-    if ($zip->open(public_path($fileName), ZipArchive::CREATE) === TRUE) {
-        foreach ($files_to_zip as $file) {
-            $zip->addFile(storage_path('app/public/'.$file), $file);
+        foreach ($fileids as $id) {
+            $reservedFile = ReservedFile::where(['files_id' => $id,'users_id' => $user_id])->first();
+            if(! $reservedFile) return response()->json(["message" => "Error: You do not download these files"], 404);
         }
-        $zip->close();
+        $zip = new ZipArchive;
+        $fileName = 'Files.zip';
+        if ($zip->open(public_path($fileName), ZipArchive::CREATE) === TRUE) {
+            foreach ($fileids as $id) {
+                $file = File::find($id);
+                $filename = $file -> file_name;
+                $zip->addFile(storage_path('app/public/'.$filename), $filename);
+            }
+            $zip->close();
+        }
+        return response()->download(public_path($fileName))->deleteFileAfterSend(true);
     }
-    return response()->download(public_path($fileName))->deleteFileAfterSend(true);
-}
-
 }
