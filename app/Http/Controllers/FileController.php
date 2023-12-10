@@ -52,24 +52,23 @@ class FileController extends Controller
         $fileid = $request->input('file_id');
         $groupId = $request->input('group_id');
         $user_id = Auth::id();
-        $existingFile = File::where('id' ,$fileid)->first();
-            if($existingFile){
-                $reservedFile = ReservedFile::where(['files_id' => $fileid,'users_id' => $user_id])->first();
-                if ($reservedFile) {
-                    $existingFile->file_status = 'free';
-                    $existingFile->save();
-                    if ($request->hasFile('file')) {
-                        $file = $request->file('file');
-                        $filename = $file->getClientOriginalName();
-                        $reservedFile->delete();
-                        $path = $file->storeAs("public", $filename);
-                        return response()->json(["message" => "The file has been updated"], 200);
-                    }
-                    else return response()->json(["message" => "Error: No file selected"], 400);
+        $result = $this->conditions($request);
+        if($result == "true"){
+            $reservedFile = ReservedFile::where(['files_id' => $fileid,'users_id' => $user_id])->first();
+            if ($reservedFile) {
+                $existingFile->file_status = 'free';
+                $existingFile->save();
+                if ($request->hasFile('file')) {
+                    $file = $request->file('file');
+                    $filename = $file->getClientOriginalName();
+                    $reservedFile->delete();
+                    $path = $file->storeAs("public", $filename);
+                    return response()->json(["message" => "The file has been updated"], 200);
                 }
+            }
                 else return response()->json(["message" => "Error: You can not modify this file"], 403);
             }
-            else return response()->json(["message" => "Error: File not found"], 500);
+            else return $result;
     }
 ////////////////////////////////////////////////////////
     public function download(Request $request){
@@ -143,9 +142,8 @@ class FileController extends Controller
                 ]);
             }
             return response()->json(["message" => "You reserved files"], 200);
-        }
-        
-////////////////////////////////////////////////
+    }
+ ////////////////////////////////////////////////
     public function getFileStatus(Request $request){
         $fileId = $request->input('file_id');
 
