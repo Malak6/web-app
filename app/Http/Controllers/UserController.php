@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use  App\Aspects\logging;
 class UserController extends Controller
 {
     /**
@@ -17,6 +18,8 @@ class UserController extends Controller
      * @return \Illuminate\Http\JsonResponse
      * @throws ValidationException
      */
+
+     #[logging]
     public function register(Request $request)
     {
         $request->validate([
@@ -42,7 +45,7 @@ class UserController extends Controller
      * @throws ValidationException
      */
 
-    public function log(Request $request){ 
+    public function log(Request $request){
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
@@ -59,7 +62,7 @@ class UserController extends Controller
      }
     public function login(Request $request)
     {
-        
+
     }
 
     /**
@@ -76,5 +79,5 @@ class UserController extends Controller
         return response()->json(['message' => 'Logged out successfully']);
     }
 
-    
+
 }

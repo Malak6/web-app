@@ -4,8 +4,60 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e8b2c5a8d7e10242d9194b096654f0bf",
+    "content-hash": "c81d6773ba3e5fac18b0f2d4b871ef5d",
     "packages": [
+        {
+            "name": "ahmadvoid/simple-aop",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ahmadvoid/Laravel-AOP.git",
+                "reference": "16d8cb25fc35c65e45f29e13f8e2d0dfde71fd33"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ahmadvoid/Laravel-AOP/zipball/16d8cb25fc35c65e45f29e13f8e2d0dfde71fd33",
+                "reference": "16d8cb25fc35c65e45f29e13f8e2d0dfde71fd33",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": ">=8.0",
+                "php": ">=8.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "AhmadVoid\\SimpleAOP\\AspectServiceProvider"
+                    ],
+                    "middleware": [
+                        "AhmadVoid\\SimpleAOP\\AspectMiddleware"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "AhmadVoid\\SimpleAOP\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A Simple AOP (Aspect Oriented Programming) implementation provide ability to make aspect which applied on controller methods, by taking advantage of #[Attributes] syntax in PHP 8",
+            "keywords": [
+                "aop",
+                "aspect",
+                "attribute",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/ahmadvoid/Laravel-AOP/issues",
+                "source": "https://github.com/ahmadvoid/Laravel-AOP/tree/main"
+            },
+            "time": "2023-11-16T18:28:50+00:00"
+        },
         {
             "name": "brick/math",
             "version": "0.11.0",
@@ -8168,7 +8220,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "ahmadvoid/simple-aop": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
