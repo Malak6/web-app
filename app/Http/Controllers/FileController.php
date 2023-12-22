@@ -8,11 +8,13 @@ use App\Models\ReservedFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use  App\Aspects\logging;
 
 
 class FileController extends Controller
 {
 
+    #[logging]
     public function upload(Request $request){
         if ($request->hasFile('file')) {
             $file = $request->file('file');
@@ -23,11 +25,11 @@ class FileController extends Controller
 
             $existingFile = File::where('file_name', $filename)->first();
             if($existingFile) return response()->json(["message" => "This file is already exist"], 400);
-        
+
             if (!$group) return response()->json(["message" => "Error: Group not found"], 404);
 
             if (!$group->users()->where('user_id', $user_id)->exists()) return response()->json(["message" => "Error: You are not a member of this group"], 403);
-        
+
             $filestatus = strtolower($request->input('file_status'));
             if (!in_array($filestatus, ['free', 'reserved'])) {
                 return response()->json(["message" => "Error: Invalid file status"], 400);
@@ -44,33 +46,48 @@ class FileController extends Controller
             $path = $file->storeAs("public", $filename);
 
             return response()->json(["message" => "File upload succeeded"]);
-        } 
+        }
         else return response()->json(["message" => "Error: No file found"], 400);
-    }   
+    }
 ////////////////////////////////////////////////////////
-    public function checkOut(Request $request){
-        $fileid = $request->input('file_id');
-        $groupId = $request->input('group_id');
-        $user_id = Auth::id();
-        $result = $this->conditions($request);
-        if($result == "true"){
-            $reservedFile = ReservedFile::where(['files_id' => $fileid,'users_id' => $user_id])->first();
-            if ($reservedFile) {
+#[logging]
+public function checkOut(Request $request)
+{
+    $fileid = $request->input('file_id');
+    $groupId = $request->input('group_id');
+    $user_id = Auth::id();
+    $result = $this->conditions($request);
+
+    if ($result == "true") {
+        $reservedFile = ReservedFile::where(['files_id' => $fileid, 'users_id' => $user_id])->first();
+
+        if ($reservedFile) {
+            $existingFile = File::find($fileid);
+
+            if ($existingFile) {
                 $existingFile->file_status = 'free';
                 $existingFile->save();
+
                 if ($request->hasFile('file')) {
                     $file = $request->file('file');
                     $filename = $file->getClientOriginalName();
                     $reservedFile->delete();
                     $path = $file->storeAs("public", $filename);
+
                     return response()->json(["message" => "The file has been updated"], 200);
                 }
+            } else {
+                return response()->json(["message" => "Error: File not found"], 404);
             }
-                else return response()->json(["message" => "Error: You can not modify this file"], 403);
-            }
-            else return $result;
+        } else {
+            return response()->json(["message" => "Error: You cannot modify this file"], 403);
+        }
+    } else {
+        return $result;
     }
+}
 ////////////////////////////////////////////////////////
+#[logging]
     public function download(Request $request){
         $result = $this->conditions($request);
         if($result == "true"){
@@ -99,16 +116,17 @@ class FileController extends Controller
         $group = Group::find($groupId);
 
         if (!$file) return response()->json(["message" => "Error: File not found"], 404);
-   
+
         else if (!$group) return response()->json(["message" => "Error: Group not found"], 404);
-        
+
         else if (!$group->users()->where('user_id', $user->id)->exists()) return response()->json(["message" => "Error: You are not a member of this group"], 403);
-        
-        else if ($file->group_id != $groupId) return response()->json(["message" => "Error: File does not belong to this group"], 403); 
-        
+
+        else if ($file->group_id != $groupId) return response()->json(["message" => "Error: File does not belong to this group"], 403);
+
         else return "true";
     }
 ///////////////////////////////////////////////
+#[logging]
     public function checkIn(Request $request){
         $user = Auth::user();
         $rollback =[];
@@ -132,7 +150,7 @@ class FileController extends Controller
                     $file->file_status ='reserved';
                     $file->save();
                     $rollback[] = $fileid;
-                }    
+                }
                 else return $result;
             }
             foreach ($fileids as $fileid) {
@@ -182,7 +200,7 @@ class FileController extends Controller
         else return $result;
     }
 //////////////////////////////////////////////////////////////////
-    public function downlaodManyFiles (Request $request){ 
+    public function downlaodManyFiles (Request $request){
         $user_id = Auth::id();
         $fileids = $request->input('file_ids');
         foreach ($fileids as $id) {
