@@ -14,6 +14,7 @@ use App\Http\Controllers\GroupController;
 use Illuminate\Validation\ValidationException;
 
 
+use AhmadVoid\SimpleAOP\AspectMiddleware;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,7 +53,9 @@ Route::post('/createGroup' , [GroupController::class , 'createGroup']);
 
 Route::post('/addUserToGroup', [GroupController::class, 'addUserToGroup']);
 
-Route::post('/download' , [FileController::class , 'download']);
+Route::post('/download' , [FileController::class , 'download'])
+->withoutMiddleware(AspectMiddleware::class);
+
 
 Route::post('/checkIn' , [FileController::class , 'checkIn']);
 
@@ -62,10 +65,11 @@ Route::get('/getUserGroups', [GroupController::class, 'getUserGroups']);
 
 Route::post('/read' , [FileController::class , 'readFile']);
 
-Route::post('/downloadFiles' , [FileController::class , 'downlaodManyFiles']);
+Route::post('/downloadFiles' , [FileController::class , 'downlaodManyFiles'])
+->withoutMiddleware(AspectMiddleware::class);
 
 });
 
 
- 
+
 

@@ -87,7 +87,7 @@ public function checkOut(Request $request)
     }
 }
 ////////////////////////////////////////////////////////
-#[logging]
+    #[logging]
     public function download(Request $request){
         $result = $this->conditions($request);
         if($result == "true"){
