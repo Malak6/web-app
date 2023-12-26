@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use  App\Aspects\logging;
+#[\App\Aspects\UserActivityMonitoring]
 class UserController extends Controller
 {
     /**
@@ -19,7 +20,7 @@ class UserController extends Controller
      * @throws ValidationException
      */
 
-     #[logging]
+
     public function register(Request $request)
     {
         $request->validate([

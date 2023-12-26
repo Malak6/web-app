@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Aspects;
 
 use AhmadVoid\SimpleAOP\Aspect;
@@ -6,7 +7,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_METHOD)]
-class logging implements Aspect
+class Logging implements Aspect
 {
     public function __construct(public string $message = 'Logging...')
     {
@@ -21,11 +22,9 @@ class logging implements Aspect
         Log::info('Controller: ' . get_class($controller));
         Log::info('Method: ' . $method);
 
-        if ($user) {
-            Log::info('User ID: ' . $user->id);
-            Log::info('User Name: ' . $user->name);
-        } else {
-            Log::info('User: Guest');
+        if ($request->has('file')) {
+            $fileName = $request->input('file_id');
+            Log::info('File: ' . $fileName);
         }
     }
 

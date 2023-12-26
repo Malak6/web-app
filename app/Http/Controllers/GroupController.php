@@ -14,14 +14,15 @@ class GroupController extends Controller
         $groupName = $request->input('group_name');
         $userId = Auth::id();
 
-        $group = new Group();
-        $group->group_name = $groupName;
-        $group->user_id = $userId;
+
+        $group = Group::create([
+            'group_name' => $request->input('group_name'),
+            'user_id'=> $userId    ]);
         $group->save();
 
         $group->users()->attach($userId, ['group_id' => $group->id]);
 
-        return response()->json(['message' => 'Success'], 201);
+        return response()->json(['message' => 'Success', 'group'=>$group], 201);
     }
 
     public function addUserToGroup(Request $request)

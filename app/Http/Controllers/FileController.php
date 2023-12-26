@@ -38,7 +38,7 @@ class FileController extends Controller
                 'file_name' => $filename,
                 'file_status' => $filestatus,
                 'user_id' => $user_id,
-                'group_id' => $group->id,
+                'group_id'  => $group->id,
             ]);
 
             if (!$newfile) return response()->json(["message" => "Error: Failed to upload file"], 500);
