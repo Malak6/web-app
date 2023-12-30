@@ -11,6 +11,8 @@ use Illuminate\Validation\ValidationException;
 use  App\Aspects\logging;
 #[\App\Aspects\UserActivityMonitoring]
 #[\App\Aspects\performance]
+#[\App\Aspects\transaction]
+
 class UserController extends Controller
 {
     /**
@@ -20,7 +22,6 @@ class UserController extends Controller
      * @return \Illuminate\Http\JsonResponse
      * @throws ValidationException
      */
-
     public function register(Request $request)
     {
         $request->validate([

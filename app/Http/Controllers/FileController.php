@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use  App\Aspects\logging;
 #[\App\Aspects\performance]
+#[\App\Aspects\transaction]
 class FileController extends Controller
 {
 

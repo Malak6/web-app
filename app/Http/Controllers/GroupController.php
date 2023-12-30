@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 #[\App\Aspects\logging]
 #[\App\Aspects\performance]
+#[\App\Aspects\transaction]
+
 class GroupController extends Controller
 {
     public function createGroup(Request $request)
