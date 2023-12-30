@@ -6,7 +6,8 @@ use App\Models\Group;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
-
+#[\App\Aspects\logging]
+#[\App\Aspects\performance]
 class GroupController extends Controller
 {
     public function createGroup(Request $request)

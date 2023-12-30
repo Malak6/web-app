@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use  App\Aspects\logging;
 #[\App\Aspects\UserActivityMonitoring]
+#[\App\Aspects\performance]
 class UserController extends Controller
 {
     /**
@@ -19,7 +20,6 @@ class UserController extends Controller
      * @return \Illuminate\Http\JsonResponse
      * @throws ValidationException
      */
-
 
     public function register(Request $request)
     {
