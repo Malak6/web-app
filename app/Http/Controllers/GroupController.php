@@ -1,11 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Http\Request;
-use App\Models\Group;
+use App\Models\File;
 use App\Models\User;
-use Illuminate\Support\Facades\Storage;
+use App\Models\Group;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 #[\App\Aspects\logging]
 #[\App\Aspects\performance]
 #[\App\Aspects\transaction]
@@ -62,7 +63,7 @@ class GroupController extends Controller
     }
 
     public function getUserGroups()
-{
+    {
     $userId = Auth::id();
 
     $groups = Group::whereHas('users', function ($query) use ($userId) {
@@ -70,5 +71,6 @@ class GroupController extends Controller
     })->get();
 
     return response()->json(['groups' => $groups], 200);
-}
+    }
+
 }
