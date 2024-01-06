@@ -68,6 +68,8 @@ Route::post('/read' , [FileController::class , 'readFile']);
 Route::post('/downloadFiles' , [FileController::class , 'downlaodManyFiles'])
 ->withoutMiddleware(AspectMiddleware::class);
 
+Route::get('/getGroupFiles/{id}' ,[FileController::class , 'getGroupFiles'] );
+
 });
 
 

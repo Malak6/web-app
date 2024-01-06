@@ -275,4 +275,9 @@ public function upload(Request $request){
         }
         return response()->download(public_path($fileName))->deleteFileAfterSend(true);
     }
+
+    public function getGroupFiles($id){
+        $files = File::where('group_id' , '=', $id )->get();
+        return response()->json(["Files" => $files]);
+    }
 }
