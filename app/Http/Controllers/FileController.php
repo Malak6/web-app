@@ -79,6 +79,7 @@ public function checkOut(Request $request)
             } else {
                 return response()->json(["message" => "Error: File not found"], 404);
             }
+            $reservedFile->delete();
         } else {
             return response()->json(["message" => "Error: You cannot modify this file"], 403);
         }
@@ -156,12 +157,14 @@ public function checkOut(Request $request)
             foreach ($fileids as $fileid) {
                 $reservedFile = ReservedFile::create([
                     'users_id' => $user->id,
-                    'files_id' => $fileid
+                    'files_id' => $fileid,
+
                 ]);
             }
             return response()->json(["message" => "You reserved files"], 200);
     }
  ////////////////////////////////////////////////
+ #[logging]
     public function getFileStatus(Request $request){
         $fileId = $request->input('file_id');
 
@@ -176,6 +179,7 @@ public function checkOut(Request $request)
         return response()->json(["file_status" => $filestatus]);
     }
 ///////////////////////////////////////////////
+    #[logging]
     public function getUserFiles(Request $request){
         $userId = Auth::id();
 
@@ -184,6 +188,7 @@ public function checkOut(Request $request)
         return response()->json(["user_files" => $userFiles]);
     }
 //////////////////////////////////////////////////////////////////
+    #[logging]
     public function readFile(Request $request){
         $fileId = $request->input('file_id');
         $user = Auth::user();
@@ -200,6 +205,7 @@ public function checkOut(Request $request)
         else return $result;
     }
 //////////////////////////////////////////////////////////////////
+    #[logging]
     public function downlaodManyFiles (Request $request){
         $user_id = Auth::id();
         $fileids = $request->input('file_ids');
@@ -226,9 +232,20 @@ public function checkOut(Request $request)
         }
         return response()->download(public_path($fileName))->deleteFileAfterSend(true);
     }
-
+    #[logging]
     public function getGroupFiles($id){
         $files = File::where('group_id' , '=', $id )->get();
         return response()->json(["Files" => $files]);
     }
+    #[logging]
+    public function getUserReservedFiles($groupId){
+        $files =[];
+        $user_id = Auth::id();
+        $reservedFiles=ReservedFile::where('users_id' , '=' , $user_id)->get();
+        foreach ($reservedFiles as $reservedfile) {
+            $files[] = File::where( ['group_id' => $groupId  , 'id' => $reservedfile->files_id])->first();
+        }
+        return response()->json(["Files" => $files]);
+    }
+
 }
