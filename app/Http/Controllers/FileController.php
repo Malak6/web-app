@@ -119,7 +119,6 @@ public function upload(Request $request){
                 $file = File::where('id', $fileid)->first();
                 $filename = $file->file_name;
                 $downloadedFile = Storage::download("public/{$filename}");
-                // إنشاء سجل التقرير
                 $report = new Report();
                 $report->file_id = $fileid;
                 $report->event_type = 'Download';
@@ -158,7 +157,7 @@ public function upload(Request $request){
     $user = Auth::user();
     $fileids = $request->input('file_ids');
     $groupId = $request->input('group_id');
-    $reports = []; 
+    $reports = [];
     foreach ($fileids as $fileid) {
         $req = ['file_id' => $fileid, 'group_id' => $groupId];
         $request->request->add(['file_id' => $fileid]);
@@ -185,7 +184,6 @@ public function upload(Request $request){
 
                 ]);
             }
-            return response()->json(["message" => "You reserved files"], 200);
 
             $filename = $file->file_name;
             $file->file_status = 'reserved';
@@ -204,6 +202,8 @@ public function upload(Request $request){
                 'file_id' => $fileid,
                 'report_id' => $report->id
             ];
+            return response()->json(["message" => "You reserved files"], 200);
+
         } else {
             return $result;
         }
