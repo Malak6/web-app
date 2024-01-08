@@ -304,4 +304,17 @@ public function upload(Request $request){
         return response()->json(["Files" => $files]);
     }
 
+    public function showFileReports($fileId)
+    {
+    $file = File::find($fileId);
+
+    if (!$file) {
+        return response()->json(["message" => "File not found"], 404);
+    }
+
+    $reports = Report::where('file_id', $fileId)->get();
+
+    return response()->json(["file" => $file, "reports" => $reports], 200);
+    }
+
 }

@@ -72,3 +72,5 @@ Route::get('/getGroupFiles/{id}' ,[FileController::class , 'getGroupFiles']);
 Route::get('/getUserReservedFiles/{groupId}' ,[FileController::class , 'getUserReservedFiles']);
 
 });
+
+Route::get('/showFileReports/{fileId}', [FileController::class, 'showFileReports']);
