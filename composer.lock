@@ -533,6 +533,7 @@
             "time": "2023-06-01T07:04:22+00:00"
         },
         {
+<<<<<<< HEAD
             "name": "fruitcake/laravel-cors",
             "version": "v3.0.0",
             "source": {
@@ -613,6 +614,8 @@
             "time": "2022-02-23T14:53:22+00:00"
         },
         {
+=======
+>>>>>>> d0672ce6c879b2ee9929c00ca22f3d65fcf254d2
             "name": "fruitcake/php-cors",
             "version": "v1.3.0",
             "source": {
@@ -8309,5 +8312,9 @@
         "php": "^8.0.2"
     },
     "platform-dev": [],
+<<<<<<< HEAD
     "plugin-api-version": "2.2.0"
+=======
+    "plugin-api-version": "2.6.0"
+>>>>>>> d0672ce6c879b2ee9929c00ca22f3d65fcf254d2
 }
