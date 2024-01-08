@@ -158,7 +158,7 @@ public function upload(Request $request){
     $user = Auth::user();
     $fileids = $request->input('file_ids');
     $groupId = $request->input('group_id');
-    $reports = []; 
+    $reports = [];
     foreach ($fileids as $fileid) {
         $req = ['file_id' => $fileid, 'group_id' => $groupId];
         $request->request->add(['file_id' => $fileid]);
@@ -185,6 +185,7 @@ public function upload(Request $request){
 
                 ]);
             }
+
             $filename = $file->file_name;
             $file->file_status = 'reserved';
             $file->save();
@@ -213,8 +214,8 @@ public function upload(Request $request){
             'files_id' => $fileid
         ]);
     }
-            return response()->json(["message" => "You reserved files"], 200);
 
+            return response()->json(["message" => "You reserved files"], 200);
 
     return response()->json(["message" => "You reserved files"], 200);
 }

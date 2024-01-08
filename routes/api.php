@@ -10,11 +10,11 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\GroupController;
-use Illuminate\Validation\ValidationException;
 
 
 use AhmadVoid\SimpleAOP\AspectMiddleware;
+use App\Http\Controllers\GroupController;
+use Illuminate\Validation\ValidationException;
 
 /*
 |--------------------------------------------------------------------------
@@ -71,11 +71,4 @@ Route::post('/downloadFiles' , [FileController::class , 'downlaodManyFiles'])
 Route::get('/getGroupFiles/{id}' ,[FileController::class , 'getGroupFiles']);
 Route::get('/getUserReservedFiles/{groupId}' ,[FileController::class , 'getUserReservedFiles']);
 
-
-
-
 });
-
-
-
-
