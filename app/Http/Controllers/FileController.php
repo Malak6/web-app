@@ -185,8 +185,6 @@ public function upload(Request $request){
 
                 ]);
             }
-            return response()->json(["message" => "You reserved files"], 200);
-
             $filename = $file->file_name;
             $file->file_status = 'reserved';
             $file->save();
@@ -215,6 +213,8 @@ public function upload(Request $request){
             'files_id' => $fileid
         ]);
     }
+            return response()->json(["message" => "You reserved files"], 200);
+
 
     return response()->json(["message" => "You reserved files"], 200);
 }
